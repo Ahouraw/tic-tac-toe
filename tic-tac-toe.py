@@ -73,8 +73,8 @@ def print_board():
 
 def update_board(action: str, user_symbol: str) -> None:
     # Get the coordinates of the action
-    row = (int(action) - 1 // 3)
-    column = (int(action) - 1 % 3)
+    row = ((int(action) - 1) // 3)
+    column = ((int(action) - 1) % 3)
 
     # Update the board with the action
     global board
@@ -89,8 +89,8 @@ def valid_action(action: str) -> bool:
         return False
     
     # Check if the square is already taken
-    row = (int(action) - 1 // 3)
-    column = (int(action) - 1 % 3)
+    row = ((int(action) - 1) // 3)
+    column = ((int(action) - 1) % 3)
 
     # if the square is not empty, aka "   ", return False
     if board[row][column] != "   ":
