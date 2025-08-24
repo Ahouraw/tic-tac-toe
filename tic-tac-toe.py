@@ -53,8 +53,11 @@ def main():
 
 # Temporary random action chooser for CPU
 def choose_action() -> str:
-    choice = randint(1, 9)
-    return str(choice)
+    while True:
+        choice = str(randint(1, 9))
+        
+        if valid_action(choice):
+            return choice
 
 
 def congratulate_winner(winner: str) -> None:
@@ -153,7 +156,6 @@ def whose_turn() -> str:
     elif X_count - 1 == O_count:
         return "O"
     else:
-        print("Invalid board state. Diagnose and Debug.")
         return "ERROR"
     
 
