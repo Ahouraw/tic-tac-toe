@@ -34,7 +34,9 @@ def main():
             update_board(action, player)
             # Check for win or draw:
             if win_or_draw():
-                break
+                return
+            else:
+                continue
         elif whose_turn() == cpu:
             action = choose_action()
 
@@ -44,7 +46,9 @@ def main():
             update_board(action, cpu)
             # Check for win or draw:
             if win_or_draw():
-                break
+                return
+            else:
+                continue
 
 
 # Temporary random action chooser for CPU
@@ -67,27 +71,16 @@ def print_board():
             print("-" * 11)
 
 
-# Figure out whose turn it is, assuming X always goes first
-def whose_turn() -> str:
-    X_count = O_count = 0
-    for row in board:
-        for square in row:
-            if square == "X":
-                X_count += 1
-            elif square == "O":
-                O_count += 1
+def update_board(action: str, user_symbol: str) -> None:
+    # Get the coordinates of the action
+    row = (int(action) - 1 // 3)
+    column = (int(action) - 1 % 3)
 
-    # compare counts to determine turn
-    if X_count == 0:
-        return "X"
-    elif X_count == O_count:
-        return "X"
-    elif X_count - 1 == O_count:
-        return "O"
-    else:
-        print("Invalid board state. Diagnose and Debug.")
-        return "ERROR"
-    
+    # Update the board with the action
+    global board
+    board[row][column] = f" {user_symbol} "
+
+    print_board()  
 
 
 def valid_action(action: str) -> bool:
@@ -105,18 +98,6 @@ def valid_action(action: str) -> bool:
         return False
     
     return True
-
-
-def update_board(action: str, user_symbol: str) -> None:
-    # Get the coordinates of the action
-    row = (int(action) - 1 // 3)
-    column = (int(action) - 1 % 3)
-
-    # Update the board with the action
-    global board
-    board[row][column] = f" {user_symbol} "
-    
-    print_board()
 
 
 def win_or_draw():
@@ -153,6 +134,28 @@ def win_or_draw():
                 return False
     return True
 
+
+# Figure out whose turn it is, assuming X always goes first
+def whose_turn() -> str:
+    X_count = O_count = 0
+    for row in board:
+        for square in row:
+            if square == " X ":
+                X_count += 1
+            elif square == " O ":
+                O_count += 1
+
+    # compare counts to determine turn
+    if X_count == 0:
+        return "X"
+    elif X_count == O_count:
+        return "X"
+    elif X_count - 1 == O_count:
+        return "O"
+    else:
+        print("Invalid board state. Diagnose and Debug.")
+        return "ERROR"
+    
 
 if __name__ == "__main__":
     main()
