@@ -1,3 +1,5 @@
+from random import randint
+
 # Set initial state
 board = [["   " for i in range(3)] for _ in range(3)]
 
@@ -45,12 +47,14 @@ def main():
                 break
 
 
+# Temporary random action chooser for CPU
 def choose_action() -> str:
-    ... # TODO
+    choice = randint(1, 9)
+    return str(choice)
 
 
 def congratulate_winner(winner: str) -> None:
-    ... # TODO
+    print(f"{winner} wins! Congratulations!")
 
 
 # Print current state of global board
