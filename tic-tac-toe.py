@@ -28,8 +28,6 @@ def main():
                 # Validate action
                 if valid_action(action):
                     break
-                else:
-                    print("Invalid action.")
             # Update board with the action
             update_board(action, player)
             # Check for win or draw:
@@ -51,14 +49,18 @@ def main():
                 continue
 
 
-# Temporary random action chooser for CPU
-def choose_action() -> str:
-    while True:
-        choice = str(randint(1, 9))
-        
-        if valid_action(choice):
-            return choice
+def actions():
+    legal_actions = []
+    for row in board:
+        for square in row:
+            if square == "   ":
+                legal_actions.append(str(board.index(row) * 3 + row.index(square) + 1))
+    return legal_actions
 
+
+# AI selected answer
+def choose_action() -> str:
+    # TODO
 
 def congratulate_winner(winner: str) -> None:
     print(f"{winner} wins! Congratulations!")
@@ -114,7 +116,7 @@ def win_or_draw():
     # Check columns for win
     for column in range(3):
         if board[0][column] == board[1][column] == board[2][column] and board[0][column] and board[0][column] != "   ":
-            winner = board[0][col].strip()
+            winner = board[0][column].strip()
             congratulate_winner(winner)
             return True
 
@@ -135,6 +137,7 @@ def win_or_draw():
         for square in row:
             if square == "   ":
                 return False
+    print("It's a draw!")
     return True
 
 
