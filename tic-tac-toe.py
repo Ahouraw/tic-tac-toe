@@ -66,6 +66,17 @@ def congratulate_winner(winner: str) -> None:
     print(f"{winner} wins! Congratulations!")
 
 
+def draw(board) -> bool:
+    if win(board):
+        return False
+    else:
+        for row in board:
+            for square in row:
+                if square == "   ":
+                    return False
+        return True
+
+
 # Print current state of global board
 def print_board(board: list[list[str]]) -> None:
     print("Current state:\n")
@@ -87,38 +98,10 @@ def result(board_copy: list[list[str]], action: str, user_symbol: str) -> list[l
 
 def terminal(board) -> bool:
     # Check rows for win
-    for row in board:
-        if row[0] == row[1] == row[2] and row[0] != "   ":
-            winner = row[0].strip()
-            congratulate_winner(winner)
-            return True
-
-    # Check columns for win
-    for column in range(3):
-        if board[0][column] == board[1][column] == board[2][column] and board[0][column] and board[0][column] != "   ":
-            winner = board[0][column].strip()
-            congratulate_winner(winner)
-            return True
-
-
-    # Check diagonals for win
-    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != "   ":
-        winner = board[0][0].strip()
-        congratulate_winner(winner)
+    if win(board) or draw(board):
         return True
-
-    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != "   ":
-        winner = board[0][2].strip()
-        congratulate_winner(winner)
-        return True
-
-    # Check for draw
-    for row in board:
-        for square in row:
-            if square == "   ":
-                return False
-    print("It's a draw!")
-    return True
+    else:
+        return False
 
 
 def update_board(action: str, board: list[list[str]], user_symbol: str) -> list[list[str]]:
@@ -149,6 +132,25 @@ def valid_action(action: str, board:list[list[str]]) -> bool:
     
     return True
 
+
+def win(board: list[list[str]]) -> bool:
+    # Check rows for win
+    for row in board:
+        if row[0] == row[1] == row[2] and row[0] != "   ":
+            return True
+
+    # Check columns for win
+    for column in range(3):
+        if board[0][column] == board[1][column] == board[2][column] and board[0][column] and board[0][column] != "   ":
+            return True
+
+    # Check diagonals for win
+    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != "   ":
+        return True
+
+    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != "   ":
+        return True
+    
 
 # Figure out whose turn it is, assuming X always goes first
 def whose_turn(board: list[list[str]]) -> str:
