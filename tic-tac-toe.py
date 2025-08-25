@@ -1,5 +1,3 @@
-from random import randint
-
 # Set initial state
 board = [["   " for i in range(3)] for _ in range(3)]
 
@@ -31,7 +29,7 @@ def main():
             # Update board with the action
             update_board(action, player)
             # Check for win or draw:
-            if win_or_draw():
+            if terminal():
                 return
             else:
                 continue
@@ -43,15 +41,16 @@ def main():
             # Update board with the action
             update_board(action, cpu)
             # Check for win or draw:
-            if win_or_draw():
+            if terminal():
                 return
             else:
                 continue
 
 
-def actions():
+# Return a list of all possible actions on the board for the AI to consider
+def actions(board_copy):
     legal_actions = []
-    for row in board:
+    for row in board_copy:
         for square in row:
             if square == "   ":
                 legal_actions.append(str(board.index(row) * 3 + row.index(square) + 1))
@@ -60,7 +59,8 @@ def actions():
 
 # AI selected answer
 def choose_action() -> str:
-    # TODO
+    ... # TODO
+
 
 def congratulate_winner(winner: str) -> None:
     print(f"{winner} wins! Congratulations!")
@@ -74,6 +74,15 @@ def print_board():
         print("|".join(row))
         if index < 2:
             print("-" * 11)
+
+
+# Returns the resulting board after a hypothetitcal legal action is taken
+def result(board_copy: list[list[str]], action: str, user_symbol: str) -> list[list[str]]:
+    row = ((int(action) - 1) // 3)
+    column = ((int(action) - 1) % 3)
+
+    board_copy[row][column] = user_symbol
+    return board_copy
 
 
 def update_board(action: str, user_symbol: str) -> None:
@@ -105,7 +114,7 @@ def valid_action(action: str) -> bool:
     return True
 
 
-def win_or_draw():
+def terminal() -> bool:
     # Check rows for win
     for row in board:
         if row[0] == row[1] == row[2] and row[0] != "   ":
