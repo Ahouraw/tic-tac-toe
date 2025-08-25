@@ -1,7 +1,7 @@
-# Set initial state
-board = [["   " for i in range(3)] for _ in range(3)]
-
 def main():    
+    # Set initial state
+    board = [["   " for i in range(3)] for _ in range(3)]
+    
     # Initialize players
     while True:
         player = input("Please choose one of the following options: X or O\n").upper()
@@ -14,43 +14,43 @@ def main():
     cpu = "O" if player == "X" else "X"
 
     # Print initial board state
-    print_board()
+    print_board(board)
 
     # Induce loop
     while True:
         # Check whose turn it is
-        if whose_turn() == player:
+        if whose_turn(board) == player:
             # Get player action and validate
             while True:
                 action = input("Select a square from 1 to 9: ")
                 # Validate action
-                if valid_action(action):
+                if valid_action(action, board):
                     break
             # Update board with the action
-            update_board(action, player)
+            board = update_board(action, board, player)
             # Check for win or draw:
-            if terminal():
+            if terminal(board):
                 return
             else:
                 continue
-        elif whose_turn() == cpu:
+        elif whose_turn(board) == cpu:
             action = choose_action()
 
             # Let the player know what the CPU chose
             print(f"CPU selects square {action}")
             # Update board with the action
-            update_board(action, cpu)
+            board = update_board(action, board, cpu)
             # Check for win or draw:
-            if terminal():
+            if terminal(board):
                 return
             else:
                 continue
 
 
 # Return a list of all possible actions on the board for the AI to consider
-def actions(board_copy):
+def actions(board: list[list[str]]) -> list[str]:
     legal_actions = []
-    for row in board_copy:
+    for row in board:
         for square in row:
             if square == "   ":
                 legal_actions.append(str(board.index(row) * 3 + row.index(square) + 1))
@@ -67,7 +67,7 @@ def congratulate_winner(winner: str) -> None:
 
 
 # Print current state of global board
-def print_board():
+def print_board(board: list[list[str]]) -> None:
     print("Current state:\n")
 
     for index, row in enumerate(board):
@@ -85,36 +85,7 @@ def result(board_copy: list[list[str]], action: str, user_symbol: str) -> list[l
     return board_copy
 
 
-def update_board(action: str, user_symbol: str) -> None:
-    # Get the coordinates of the action
-    row = ((int(action) - 1) // 3)
-    column = ((int(action) - 1) % 3)
-
-    # Update the board with the action
-    global board
-    board[row][column] = f" {user_symbol} "
-
-    print_board()  
-
-
-def valid_action(action: str) -> bool:
-    # Check if action is a number between 1 and 9
-    if int(action) not in [i for i in range(1, 10)]:
-        return False
-    
-    # Check if the square is already taken
-    row = ((int(action) - 1) // 3)
-    column = ((int(action) - 1) % 3)
-
-    # if the square is not empty, aka "   ", return False
-    if board[row][column] != "   ":
-        print("Square already taken.")
-        return False
-    
-    return True
-
-
-def terminal() -> bool:
+def terminal(board) -> bool:
     # Check rows for win
     for row in board:
         if row[0] == row[1] == row[2] and row[0] != "   ":
@@ -150,8 +121,37 @@ def terminal() -> bool:
     return True
 
 
+def update_board(action: str, board: list[list[str]], user_symbol: str) -> list[list[str]]:
+    # Get the coordinates of the action
+    row = ((int(action) - 1) // 3)
+    column = ((int(action) - 1) % 3)
+
+    # Update the board with the action
+    board[row][column] = f" {user_symbol} "
+
+    print_board(board)  
+    return board
+
+
+def valid_action(action: str, board:list[list[str]]) -> bool:
+    # Check if action is a number between 1 and 9
+    if int(action) not in [i for i in range(1, 10)]:
+        return False
+    
+    # Check if the square is already taken
+    row = ((int(action) - 1) // 3)
+    column = ((int(action) - 1) % 3)
+
+    # if the square is not empty, aka "   ", return False
+    if board[row][column] != "   ":
+        print("Square already taken.")
+        return False
+    
+    return True
+
+
 # Figure out whose turn it is, assuming X always goes first
-def whose_turn() -> str:
+def whose_turn(board: list[list[str]]) -> str:
     X_count = O_count = 0
     for row in board:
         for square in row:
