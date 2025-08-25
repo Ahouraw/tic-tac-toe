@@ -66,6 +66,7 @@ def congratulate_winner(winner: str) -> None:
     print(f"{winner} wins! Congratulations!")
 
 
+# Check for draw
 def draw(board) -> bool:
     if win(board):
         return False
@@ -88,15 +89,15 @@ def print_board(board: list[list[str]]) -> None:
 
 
 # Returns the resulting board after a hypothetitcal legal action is taken
-def result(board_copy: list[list[str]], action: str, user_symbol: str) -> list[list[str]]:
+def result(board: list[list[str]], action: str, user_symbol: str) -> list[list[str]]:
     row = ((int(action) - 1) // 3)
     column = ((int(action) - 1) % 3)
 
-    board_copy[row][column] = user_symbol
-    return board_copy
+    board[row][column] = user_symbol
+    return board
 
 
-def terminal(board) -> bool:
+def terminal(board: list[list[str]]) -> bool:
     # Check rows for win
     if win(board) or draw(board):
         return True
@@ -104,6 +105,7 @@ def terminal(board) -> bool:
         return False
 
 
+# Change the board state with the given action by the user
 def update_board(action: str, board: list[list[str]], user_symbol: str) -> list[list[str]]:
     # Get the coordinates of the action
     row = ((int(action) - 1) // 3)
@@ -116,6 +118,7 @@ def update_board(action: str, board: list[list[str]], user_symbol: str) -> list[
     return board
 
 
+# Validate that the action is a number between 1 and 9 and that the square is not already taken
 def valid_action(action: str, board:list[list[str]]) -> bool:
     # Check if action is a number between 1 and 9
     if int(action) not in [i for i in range(1, 10)]:
@@ -133,6 +136,7 @@ def valid_action(action: str, board:list[list[str]]) -> bool:
     return True
 
 
+# Check for win
 def win(board: list[list[str]]) -> bool:
     # Check rows for win
     for row in board:
