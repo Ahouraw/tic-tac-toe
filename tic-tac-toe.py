@@ -1,7 +1,7 @@
-def main():    
+def main():
     # Set initial state
     board = [["   " for i in range(3)] for _ in range(3)]
-    
+
     # Initialize players
     while True:
         player = input("Please choose one of the following options: X or O\n").upper()
@@ -34,7 +34,7 @@ def main():
             else:
                 continue
         elif whose_turn(board) == cpu:
-            action = choose_action()
+            action = choose_action(board, cpu)
 
             # Let the player know what the CPU chose
             print(f"CPU selects square {action}")
@@ -58,8 +58,9 @@ def actions(board: list[list[str]]) -> list[str]:
 
 
 # AI selected answer
-def choose_action() -> str:
-    ... # TODO
+def choose_action(board: list[list[str]], user_symbol: str) -> str:
+    actions_utilities = utility(board, user_symbol)
+    return max(actions_utilities.values())
 
 
 def congratulate_winner(winner: str) -> None:
@@ -90,8 +91,8 @@ def print_board(board: list[list[str]]) -> None:
 
 # Returns the resulting board after a hypothetitcal legal action is taken
 def result(board: list[list[str]], action: str, user_symbol: str) -> list[list[str]]:
-    row = ((int(action) - 1) // 3)
-    column = ((int(action) - 1) % 3)
+    row = (int(action) - 1) // 3
+    column = (int(action) - 1) % 3
 
     board[row][column] = user_symbol
     return board
@@ -108,14 +109,44 @@ def terminal(board: list[list[str]]) -> bool:
 # Change the board state with the given action by the user
 def update_board(action: str, board: list[list[str]], user_symbol: str) -> list[list[str]]:
     # Get the coordinates of the action
-    row = ((int(action) - 1) // 3)
-    column = ((int(action) - 1) % 3)
+    row = (int(action) - 1) // 3
+    column = (int(action) - 1) % 3
 
     # Update the board with the action
     board[row][column] = f" {user_symbol} "
 
-    print_board(board)  
+    print_board(board)
     return board
+
+
+def utility(board: list[list[str]], user_symbol: str) -> dict:
+    opponent_symbol = "O" if user_symbol == "X" else "X"
+    actions_list = actions(board)
+    actions_dict = {key: 0 for key in actions_list}
+
+    # For each possible action, get the resulting utility value, update the dictionary
+    for action in actions_dict:
+        r = result(board, action, user_symbol)
+        if terminal(r):
+            if win(r):
+                actions_dict[action] = 1
+                return actions_dict
+            else:
+                pass
+        else:
+            # Now check for opponent's possible actions
+            opponent_actions = actions(r)
+            for opp_action in opponent_actions:
+                r_opp = result(r, opp_action, opponent_symbol)
+                if terminal(r_opp):
+                    if win(r_opp):
+                        actions_dict[action] = -1
+                    else:
+                        pass
+                else:
+                    pass
+    # The utility of the action is the minimum of the opponent's possible actions
+    return actions_dict
 
 
 # Validate that the action is a number between 1 and 9 and that the square is not already taken
@@ -123,16 +154,16 @@ def valid_action(action: str, board:list[list[str]]) -> bool:
     # Check if action is a number between 1 and 9
     if int(action) not in [i for i in range(1, 10)]:
         return False
-    
+
     # Check if the square is already taken
-    row = ((int(action) - 1) // 3)
-    column = ((int(action) - 1) % 3)
+    row = (int(action) - 1) // 3
+    column = (int(action) - 1) % 3
 
     # if the square is not empty, aka "   ", return False
     if board[row][column] != "   ":
         print("Square already taken.")
         return False
-    
+
     return True
 
 
@@ -154,7 +185,9 @@ def win(board: list[list[str]]) -> bool:
 
     if board[0][2] == board[1][1] == board[2][0] and board[0][2] != "   ":
         return True
-    
+
+    return False
+
 
 # Figure out whose turn it is, assuming X always goes first
 def whose_turn(board: list[list[str]]) -> str:
@@ -175,7 +208,7 @@ def whose_turn(board: list[list[str]]) -> str:
         return "O"
     else:
         return "ERROR"
-    
+
 
 if __name__ == "__main__":
     main()
