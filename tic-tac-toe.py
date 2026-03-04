@@ -1,9 +1,12 @@
+import random, time
 from random import randint
+
+random.seed(time.time())
 
 # Set initial state
 board = [["   " for i in range(3)] for _ in range(3)]
 
-def main():    
+def main():
     # Initialize players
     while True:
         player = input("Please choose one of the following options: X or O\n").upper()
@@ -39,12 +42,13 @@ def main():
                 continue
         elif whose_turn() == cpu:
             action = choose_action()
+            time.sleep(choose_sleep_time())
 
             # Let the player know what the CPU chose
             print(f"CPU selects square {action}")
             # Update board with the action
             update_board(action, cpu)
-            # Check for win or draw:
+            # Check for win or draw
             if win_or_draw():
                 return
             else:
@@ -55,9 +59,13 @@ def main():
 def choose_action() -> str:
     while True:
         choice = str(randint(1, 9))
-        
+
         if valid_action(choice):
             return choice
+
+# Choose sleep time before any CPU response for smoother game flow (give illusion of CPU thinking)
+def choose_sleep_time() -> float:
+    return random.uniform(0.1, 0.5)
 
 
 def congratulate_winner(winner: str) -> None:
@@ -66,7 +74,7 @@ def congratulate_winner(winner: str) -> None:
 
 # Print current state of global board
 def print_board():
-    print("Current state:\n")
+    print("\nCurrent state:\n")
 
     for index, row in enumerate(board):
         print("|".join(row))
@@ -83,14 +91,14 @@ def update_board(action: str, user_symbol: str) -> None:
     global board
     board[row][column] = f" {user_symbol} "
 
-    print_board()  
+    print_board()
 
 
 def valid_action(action: str) -> bool:
     # Check if action is a number between 1 and 9
     if int(action) not in [i for i in range(1, 10)]:
         return False
-    
+
     # Check if the square is already taken
     row = ((int(action) - 1) // 3)
     column = ((int(action) - 1) % 3)
@@ -99,7 +107,7 @@ def valid_action(action: str) -> bool:
     if board[row][column] != "   ":
         print("Square already taken.")
         return False
-    
+
     return True
 
 
@@ -113,11 +121,10 @@ def win_or_draw():
 
     # Check columns for win
     for column in range(3):
-        if board[0][column] == board[1][column] == board[2][column] and board[0][column] and board[0][column] != "   ":
-            winner = board[0][col].strip()
+        if board[0][column] == board[1][column] == board[2][column] and board[0][column] != "   ":
+            winner = board[0][column].strip()
             congratulate_winner(winner)
             return True
-
 
     # Check diagonals for win
     if board[0][0] == board[1][1] == board[2][2] and board[0][0] != "   ":
@@ -156,8 +163,8 @@ def whose_turn() -> str:
     elif X_count - 1 == O_count:
         return "O"
     else:
-        return "ERROR"
-    
+        return "ERROR calculating players turn"
+
 
 if __name__ == "__main__":
     main()
